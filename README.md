@@ -5,7 +5,7 @@
 
 ## Scope
 
-A FileSystem Abstraction System for Go, based on the package [Afero](https://https://github.com/spf13/afero). This project is a subset of the functionality of Fsgo that eliminates the use of the crypto dependency. The Fsgo project includes concrete implementations of the abstraction that support multiple filesystems that are not needed for unit testing in a secure environment.
+A FileSystem Abstraction System for Go, based on the package [Afero](https://github.com/spf13/afero). This project is a subset of the functionality of Fsgo that eliminates the use of the crypto dependency. The Fsgo project includes concrete implementations of the abstraction that support multiple filesystems that are not needed for unit testing in a secure environment.
 
 Fsgo is a filesystem framework providing a simple, uniform and universal API
 interacting with any filesystem, as an abstraction layer providing interfaces,
