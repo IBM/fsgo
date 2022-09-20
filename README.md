@@ -1,40 +1,94 @@
-<!-- This should be the location of the title of the repository, normally the short name -->
-# repo-template
+# fsgo
 
 <!-- Build Status, is a great thing to have at the top of your repository, it shows that you take your CI/CD as first class citizens -->
 <!-- [![Build Status](https://travis-ci.org/jjasghar/ibm-cloud-cli.svg?branch=master)](https://travis-ci.org/jjasghar/ibm-cloud-cli) -->
 
-<!-- Not always needed, but a scope helps the user understand in a short sentance like below, why this repo exists -->
 ## Scope
 
-The purpose of this project is to provide a template for new open source repositories.
+A FileSystem Abstraction System for Go, based on the package [Fsgo](https://github.com/IBM/fsgo). This project is a subset of the functionality of Fsgo that eliminates the use of the crypto dependency. The Fsgo project includes concrete implementations of the abstraction that support multiple filesystems that are not needed for unit testing in a secure environment.
 
-<!-- A more detailed Usage or detailed explaination of the repository here -->
-## Usage
+Fsgo is a filesystem framework providing a simple, uniform and universal API
+interacting with any filesystem, as an abstraction layer providing interfaces,
+types and methods. Fsgo has an exceptionally clean interface and simple design
+without needless constructors or initialization methods.
 
-This repository contains some example best practices for open source repositories:
+Fsgo is also a library providing a base set of interoperable backend
+filesystems that make it easy to work with fsgo while retaining all the power
+and benefit of the os and ioutil packages.
 
-* [LICENSE](LICENSE)
-* [README.md](README.md)
-* [CONTRIBUTING.md](CONTRIBUTING.md)
-* [MAINTAINERS.md](MAINTAINERS.md)
-<!-- A Changelog allows you to track major changes and things that happen, https://github.com/github-changelog-generator/github-changelog-generator can help automate the process -->
-* [CHANGELOG.md](CHANGELOG.md)
+Fsgo provides significant improvements over using the os package alone, most
+notably the ability to create mock and testing filesystems without relying on the disk.
 
-> These are optional
+It is suitable for use in any situation where you would consider using the OS
+package as it provides an additional abstraction that makes it easy to use a
+memory backed file system during testing. It also adds support for the http
+filesystem for full interoperability.
 
-<!-- The following are OPTIONAL, but strongly suggested to have in your repository. -->
-* [dco.yml](.github/dco.yml) - This enables DCO bot for you, please take a look https://github.com/probot/dco for more details.
-* [travis.yml](.travis.yml) - This is a example `.travis.yml`, please take a look https://docs.travis-ci.com/user/tutorial/ for more details.
+## Fsgo Features
 
-These may be copied into a new or existing project to make it easier for developers not on a project team to collaborate.
+* A single consistent API for accessing a variety of filesystems
+* Interoperation between a variety of file system types
+* A set of interfaces to encourage and enforce interoperability between backends
+* An atomic cross platform memory backed file system
+* Support for compositional (union) file systems by combining multiple file systems acting as one
+* Specialized backends which modify existing filesystems (Read Only, Regexp filtered)
+* A set of utility functions ported from io, ioutil & hugo to be fsgo aware
+* Wrapper for go 1.16 filesystem abstraction `io/fs.FS`
 
-<!-- A notes section is useful for anything that isn't covered in the Usage or Scope. Like what we have below. -->
+# Using Fsgo
+
+Fsgo is easy to use and easier to adopt.
+
+A few different ways you could use Fsgo:
+
+* Use the interfaces alone to define your own file system.
+* Wrapper for the OS packages.
+* Define different filesystems for different parts of your application.
+* Use Fsgo for mock filesystems while testing
+
+## Step 1: Install Fsgo
+
+First use go get to install the latest version of the library.
+
+    $ go get github.com/IBM/fsgo
+
+Next include Fsgo in your application.
+```go
+import "github.com/IBM/fsgo"
+```
+
+## Step 2: Declare a backend
+
+First define a package variable and set it to a pointer to a filesystem.
+```go
+var AppFs = fsgo.NewMemMapFs()
+
+or
+
+var AppFs = fsgo.NewOsFs()
+```
+It is important to note that if you repeat the composite literal you
+will be using a completely new and isolated filesystem. In the case of
+OsFs it will still use the same underlying filesystem but will reduce
+the ability to drop in other filesystems as desired.
+
+## Step 3: Use it like you would the OS package
+
+Throughout your application use any function and method like you normally
+would.
+
+So if my application before had:
+```go
+os.Open("/tmp/foo")
+```
+We would replace it with:
+```go
+AppFs.Open("/tmp/foo")
+```
+
+`AppFs` being the variable we defined above.
+
 ## Notes
-
-**NOTE: While this boilerplate project uses the Apache 2.0 license, when
-establishing a new repo using this template, please use the
-license that was approved for your project.**
 
 **NOTE: This repository has been configured with the [DCO bot](https://github.com/probot/dco).
 When you set up a new repository that uses the Apache license, you should
@@ -67,11 +121,3 @@ If you would like to see the detailed LICENSE click [here](LICENSE).
 # SPDX-License-Identifier: Apache2.0
 #
 ```
-## Authors
-
-Optionally, you may include a list of authors, though this is redundant with the built-in
-GitHub list of contributors.
-
-- Author: New OpenSource IBMer <new-opensource-ibmer@ibm.com>
-
-[issues]: https://github.com/IBM/repo-template/issues/new
